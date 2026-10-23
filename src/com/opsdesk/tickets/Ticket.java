@@ -4,11 +4,11 @@ public abstract class Ticket implements Assignable {
 
     private int id;
     private String title;
-    private String status;
-    private String priority;
+    private TicketStatus status;
+    private Priority priority;
     private String assignee;
 
-    public Ticket(int id, String title, String status, String priority) {
+    public Ticket(int id, String title, TicketStatus status, Priority priority) {
         this.id = id;
         this.title = title;
         this.status = status;
@@ -23,11 +23,11 @@ public abstract class Ticket implements Assignable {
         return title;
     }
 
-    public String getStatus() {
+    public TicketStatus getStatus() {
         return status;
     }
 
-    public String getPriority() {
+    public Priority getPriority() {
         return priority;
     }
 

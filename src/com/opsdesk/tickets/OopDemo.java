@@ -7,8 +7,8 @@ public class OopDemo {
 
     public static void main(String[] args) {
         List<Ticket> tickets = new ArrayList<>();
-        tickets.add(new SupportTicket(1, "Cannot log in to VPN", "OPEN", "HIGH", "Network"));
-        tickets.add(new AssetRequest(2, "New laptop for new starter", "OPEN", "MEDIUM", "Dell Latitude 5440"));
+        tickets.add(new SupportTicket(1, "Cannot log in to VPN", TicketStatus.OPEN, Priority.HIGH, "Network"));
+        tickets.add(new AssetRequest(2, "New laptop for new starter", TicketStatus.OPEN, Priority.MEDIUM, "Dell Latitude 5440"));
 
         System.out.println("--- Describe every ticket ---");
         for (Ticket ticket : tickets) {

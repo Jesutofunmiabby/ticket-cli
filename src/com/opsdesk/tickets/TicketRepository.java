@@ -44,10 +44,10 @@ public class TicketRepository {
         return byId;
     }
 
-    public Map<String, List<Ticket>> groupByStatus() {
-        Map<String, List<Ticket>> byStatus = new HashMap<>();
+    public Map<TicketStatus, List<Ticket>> groupByStatus() {
+        Map<TicketStatus, List<Ticket>> byStatus = new HashMap<>();
         for (Ticket ticket : tickets) {
-            String status = ticket.getStatus();
+            TicketStatus status = ticket.getStatus();
             if (!byStatus.containsKey(status)) {
                 byStatus.put(status, new ArrayList<>());
             }
