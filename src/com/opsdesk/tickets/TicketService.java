@@ -8,13 +8,14 @@ public class TicketService {
     private int nextId = 1;
 
     public Ticket createSupportTicket(String title, Priority priority, String category) {
-        Ticket ticket = new SupportTicket(nextId++, title, TicketStatus.OPEN, priority, category);
-        repository.add(ticket);
-        return ticket;
+        return addNew(new SupportTicket(nextId++, title, TicketStatus.OPEN, priority, category));
     }
 
     public Ticket createAssetRequest(String title, Priority priority, String assetName) {
-        Ticket ticket = new AssetRequest(nextId++, title, TicketStatus.OPEN, priority, assetName);
+        return addNew(new AssetRequest(nextId++, title, TicketStatus.OPEN, priority, assetName));
+    }
+
+    private Ticket addNew(Ticket ticket) {
         repository.add(ticket);
         return ticket;
     }
