@@ -2,10 +2,10 @@ package com.opsdesk.tickets;
 
 public abstract class Ticket implements Assignable {
 
-    private int id;
-    private String title;
+    private final int id;
+    private final String title;
     private TicketStatus status;
-    private Priority priority;
+    private final Priority priority;
     private String assignee;
 
     public Ticket(int id, String title, TicketStatus status, Priority priority) {
