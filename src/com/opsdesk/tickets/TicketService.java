@@ -19,6 +19,14 @@ public class TicketService {
         return ticket;
     }
 
+    // Adds tickets loaded from a file; new tickets get ids after the highest loaded id
+    public void addExistingTickets(List<Ticket> tickets) {
+        for (Ticket ticket : tickets) {
+            repository.add(ticket);
+            nextId = Math.max(nextId, ticket.getId() + 1);
+        }
+    }
+
     public Ticket getById(int id) {
         return repository.findById(id)
                 .orElseThrow(() -> new TicketNotFoundException(id));
@@ -34,6 +42,10 @@ public class TicketService {
         Ticket ticket = getById(id);
         ticket.changeStatus(newStatus);
         return ticket;
+    }
+
+    public List<Ticket> getAll() {
+        return repository.getAll();
     }
 
     public List<Ticket> listByPriority() {
