@@ -15,7 +15,6 @@ public class AssetRequest extends Ticket {
 
     @Override
     public String describe() {
-        return "Asset request #" + getId() + " [" + getPriority() + ", " + getStatus() + "]: "
-                + getTitle() + " (asset: " + assetName + ")";
+        return describeAs("Asset request", "asset: " + assetName);
     }
 }

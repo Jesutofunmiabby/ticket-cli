@@ -15,7 +15,6 @@ public class SupportTicket extends Ticket {
 
     @Override
     public String describe() {
-        return "Support ticket #" + getId() + " [" + getPriority() + ", " + getStatus() + "]: "
-                + getTitle() + " (category: " + category + ")";
+        return describeAs("Support ticket", "category: " + category);
     }
 }

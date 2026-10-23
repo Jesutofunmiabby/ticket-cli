@@ -52,6 +52,13 @@ public abstract class Ticket implements Assignable {
 
     public abstract String describe();
 
+    // Shared wording for describe(), so each subclass only supplies what is different
+    protected String describeAs(String kind, String detail) {
+        String owner = assignee == null ? "unassigned" : "assigned to " + assignee;
+        return kind + " #" + id + " [" + priority + ", " + status + "]: " + title
+                + " (" + detail + ") - " + owner;
+    }
+
     // Two tickets are the same ticket if they have the same id
     @Override
     public boolean equals(Object other) {
