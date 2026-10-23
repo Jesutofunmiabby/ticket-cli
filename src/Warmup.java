@@ -15,8 +15,21 @@ public class Warmup {
         }
     }
 
+    // Part 2: a word is a palindrome if it reads the same backwards
+    static boolean isPalindrome(String s) {
+        String lower = s.toLowerCase();
+        String reversed = new StringBuilder(lower).reverse().toString();
+        return reversed.equals(lower);
+    }
+
     public static void main(String[] args) {
         System.out.println("--- FizzBuzz 1 to 20 ---");
         fizzBuzz();
+
+        System.out.println("--- Palindromes ---");
+        String[] words = {"racecar", "level", "Madam", "java"};
+        for (String word : words) {
+            System.out.println(word + " -> " + isPalindrome(word));
+        }
     }
 }
