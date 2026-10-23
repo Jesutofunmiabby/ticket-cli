@@ -1,6 +1,7 @@
 package com.opsdesk.tickets;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -53,5 +54,11 @@ public class TicketRepository {
             byStatus.get(status).add(ticket);
         }
         return byStatus;
+    }
+
+    public List<Ticket> sortedByPriorityThenTitle() {
+        List<Ticket> sorted = new ArrayList<>(tickets);
+        sorted.sort(Comparator.comparing(Ticket::getPriority).thenComparing(Ticket::getTitle));
+        return sorted;
     }
 }
