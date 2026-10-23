@@ -1,7 +1,9 @@
 package com.opsdesk.tickets;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class TicketRepository {
 
@@ -19,5 +21,15 @@ public class TicketRepository {
         for (Ticket ticket : tickets) {
             System.out.println(ticket.describe());
         }
+    }
+
+    public Set<String> getUniqueAssignees() {
+        Set<String> assignees = new HashSet<>();
+        for (Ticket ticket : tickets) {
+            if (ticket.getAssignee() != null) {
+                assignees.add(ticket.getAssignee());
+            }
+        }
+        return assignees;
     }
 }
