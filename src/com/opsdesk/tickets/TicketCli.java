@@ -1,8 +1,10 @@
 package com.opsdesk.tickets;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class TicketCli {
 
@@ -22,7 +24,7 @@ public class TicketCli {
                 System.out.println("1) Create  2) Assign  3) Status  4) List  5) Filter  0) Quit");
                 String choice = prompt("Choose an option: ");
                 try {
-                    running = handle(choice);
+                    running = handleChoice(choice);
                 } catch (TicketNotFoundException e) {
                     System.out.println("Sorry: " + e.getMessage());
                 }
@@ -34,11 +36,13 @@ public class TicketCli {
     }
 
     // Returns false when the user wants to quit
-    private boolean handle(String choice) {
+    private boolean handleChoice(String choice) {
         switch (choice) {
             case "1" -> create();
-            case "2", "3", "5" -> System.out.println("That option is not available yet.");
+            case "2" -> assign();
+            case "3" -> changeStatus();
             case "4" -> list();
+            case "5" -> filter();
             case "0" -> {
                 return false;
             }
@@ -50,7 +54,7 @@ public class TicketCli {
     private void create() {
         String type = readType();
         String title = readNonBlank("Title: ");
-        Priority priority = readPriority();
+        Priority priority = readEnum("Priority", Priority.class);
         Ticket ticket;
         if (type.equals("1")) {
             String category = readNonBlank("Category: ");
@@ -62,10 +66,32 @@ public class TicketCli {
         System.out.println("Created: " + ticket.describe());
     }
 
+    private void assign() {
+        int id = readId();
+        service.getById(id);    // fail fast on an unknown id, before asking for a name
+        String user = readNonBlank("Assign to: ");
+        System.out.println("Assigned: " + service.assign(id, user).describe());
+    }
+
+    private void changeStatus() {
+        int id = readId();
+        service.getById(id);    // fail fast on an unknown id, before asking for a status
+        TicketStatus newStatus = readEnum("New status", TicketStatus.class);
+        System.out.println("Updated: " + service.changeStatus(id, newStatus).describe());
+    }
+
     private void list() {
-        List<Ticket> tickets = service.listByPriority();
+        printTickets(service.listByPriority(), "No tickets yet.");
+    }
+
+    private void filter() {
+        TicketStatus status = readEnum("Show status", TicketStatus.class);
+        printTickets(service.filterByStatus(status), "No tickets with status " + status + ".");
+    }
+
+    private void printTickets(List<Ticket> tickets, String messageIfEmpty) {
         if (tickets.isEmpty()) {
-            System.out.println("No tickets yet.");
+            System.out.println(messageIfEmpty);
             return;
         }
         tickets.forEach(ticket -> System.out.println(ticket.describe()));
@@ -81,6 +107,17 @@ public class TicketCli {
         }
     }
 
+    private int readId() {
+        while (true) {
+            String value = prompt("Ticket id: ");
+            try {
+                return Integer.parseInt(value);
+            } catch (NumberFormatException e) {
+                System.out.println("Please enter a ticket id as a whole number, for example 3.");
+            }
+        }
+    }
+
     private String readNonBlank(String label) {
         while (true) {
             String value = prompt(label);
@@ -91,13 +128,17 @@ public class TicketCli {
         }
     }
 
-    private Priority readPriority() {
+    // Works for any enum: keeps asking until the input matches one of its values
+    private <E extends Enum<E>> E readEnum(String label, Class<E> enumType) {
+        String choices = Arrays.stream(enumType.getEnumConstants())
+                .map(Enum::name)
+                .collect(Collectors.joining(", "));
         while (true) {
-            String value = prompt("Priority (HIGH, MEDIUM, LOW): ").toUpperCase();
+            String value = prompt(label + " (" + choices + "): ").toUpperCase();
             try {
-                return Priority.valueOf(value);
+                return Enum.valueOf(enumType, value);
             } catch (IllegalArgumentException e) {
-                System.out.println("Please type HIGH, MEDIUM or LOW.");
+                System.out.println("Please type one of: " + choices + ".");
             }
         }
     }
