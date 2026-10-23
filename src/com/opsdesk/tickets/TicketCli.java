@@ -36,6 +36,11 @@ public class TicketCli {
                     running = handleChoice(choice);
                 } catch (TicketNotFoundException e) {
                     System.out.println("Sorry: " + e.getMessage());
+                } catch (NoSuchElementException e) {
+                    throw e;    // input ended: let the outer catch stop the program cleanly
+                } catch (RuntimeException e) {
+                    // Last safety net, so an unexpected error never shows a stack trace
+                    System.out.println("Something went wrong, so that action was cancelled. Please try again.");
                 }
             }
         } catch (NoSuchElementException e) {
