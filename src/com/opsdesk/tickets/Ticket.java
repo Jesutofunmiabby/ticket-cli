@@ -35,6 +35,13 @@ public abstract class Ticket implements Assignable {
         return assignee;
     }
 
+    public void changeStatus(TicketStatus newStatus) {
+        if (newStatus == null) {
+            throw new IllegalArgumentException("Status cannot be empty.");
+        }
+        this.status = newStatus;
+    }
+
     @Override
     public void assignTo(String user) {
         if (user == null || user.isBlank()) {
