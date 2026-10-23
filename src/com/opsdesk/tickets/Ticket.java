@@ -2,10 +2,10 @@ package com.opsdesk.tickets;
 
 public abstract class Ticket implements Assignable {
 
-    private int id;
-    private String title;
+    private final int id;
+    private final String title;
     private TicketStatus status;
-    private Priority priority;
+    private final Priority priority;
     private String assignee;
 
     public Ticket(int id, String title, TicketStatus status, Priority priority) {
@@ -35,6 +35,13 @@ public abstract class Ticket implements Assignable {
         return assignee;
     }
 
+    public void changeStatus(TicketStatus newStatus) {
+        if (newStatus == null) {
+            throw new IllegalArgumentException("Status cannot be empty.");
+        }
+        this.status = newStatus;
+    }
+
     @Override
     public void assignTo(String user) {
         if (user == null || user.isBlank()) {
@@ -44,6 +51,13 @@ public abstract class Ticket implements Assignable {
     }
 
     public abstract String describe();
+
+    // Shared wording for describe(), so each subclass only supplies what is different
+    protected String describeAs(String kind, String detail) {
+        String owner = assignee == null ? "unassigned" : "assigned to " + assignee;
+        return kind + " #" + id + " [" + priority + ", " + status + "]: " + title
+                + " (" + detail + ") - " + owner;
+    }
 
     // Two tickets are the same ticket if they have the same id
     @Override

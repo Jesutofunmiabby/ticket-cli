@@ -2,7 +2,7 @@ package com.opsdesk.tickets;
 
 public class SupportTicket extends Ticket {
 
-    private String category;
+    private final String category;
 
     public SupportTicket(int id, String title, TicketStatus status, Priority priority, String category) {
         super(id, title, status, priority);
@@ -15,7 +15,6 @@ public class SupportTicket extends Ticket {
 
     @Override
     public String describe() {
-        return "Support ticket #" + getId() + " [" + getPriority() + ", " + getStatus() + "]: "
-                + getTitle() + " (category: " + category + ")";
+        return describeAs("Support ticket", "category: " + category);
     }
 }

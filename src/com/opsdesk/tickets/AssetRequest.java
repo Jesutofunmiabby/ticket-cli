@@ -2,7 +2,7 @@ package com.opsdesk.tickets;
 
 public class AssetRequest extends Ticket {
 
-    private String assetName;
+    private final String assetName;
 
     public AssetRequest(int id, String title, TicketStatus status, Priority priority, String assetName) {
         super(id, title, status, priority);
@@ -15,7 +15,6 @@ public class AssetRequest extends Ticket {
 
     @Override
     public String describe() {
-        return "Asset request #" + getId() + " [" + getPriority() + ", " + getStatus() + "]: "
-                + getTitle() + " (asset: " + assetName + ")";
+        return describeAs("Asset request", "asset: " + assetName);
     }
 }
