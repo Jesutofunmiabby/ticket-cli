@@ -13,7 +13,7 @@ public class TicketDemo {
     private static int passed = 0;
     private static int total = 0;
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         TicketService service = new TicketService();
         String trickyTitle = "Printer jam, floor 2 \"urgent\" 100% & 50/50; done?";
 
@@ -59,9 +59,21 @@ public class TicketDemo {
                 new TicketSummary("1", trickyTitle, TicketStatus.IN_PROGRESS), service.summaries().get(0));
         check("getAll returns every ticket", 3, service.getAll().size());
 
+        checkSaveAndLoad(service);
+
+        System.out.println();
+        System.out.println(passed + "/" + total + " passed");
+        if (passed != total) {
+            System.exit(1);
+        }
+    }
+
+    // Any IOException is reported as a FAIL instead of stopping the run
+    private static void checkSaveAndLoad(TicketService service) {
         System.out.println("--- Save and load ---");
-        Path file = Files.createTempFile("tickets-demo", ".txt");
+        Path file = null;
         try {
+            file = Files.createTempFile("tickets-demo", ".txt");
             TicketFileStore store = new TicketFileStore(file);
             store.save(service.getAll());
             TicketFileStore.LoadResult loaded = store.load();
@@ -83,14 +95,21 @@ public class TicketDemo {
             Files.delete(file);
             TicketFileStore.LoadResult missing = store.load();
             check("a missing file loads as empty", 0, missing.tickets().size());
+        } catch (IOException e) {
+            check("save and load finish without an IOException", "no IOException", e.toString());
         } finally {
-            Files.deleteIfExists(file);
+            deleteQuietly(file);
         }
+    }
 
-        System.out.println();
-        System.out.println(passed + "/" + total + " passed");
-        if (passed != total) {
-            System.exit(1);
+    private static void deleteQuietly(Path file) {
+        if (file == null) {
+            return;
+        }
+        try {
+            Files.deleteIfExists(file);
+        } catch (IOException e) {
+            System.out.println("Note: could not delete temporary file " + file);
         }
     }
 
