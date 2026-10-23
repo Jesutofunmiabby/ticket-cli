@@ -39,7 +39,7 @@ public class ModernJavaDemo {
             System.out.println("getById(42): " + service.getById(42).getTitle());
             System.out.println("This line is never reached.");
         } catch (TicketNotFoundException e) {
-            System.out.println("Sorry, " + e.getMessage());
+            System.out.println("Sorry: " + e.getMessage());
         }
     }
 }
