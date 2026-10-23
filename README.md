@@ -17,11 +17,22 @@ From the project root (works in PowerShell and Git Bash):
 javac -d out src/*.java src/com/opsdesk/tickets/*.java
 ```
 
-Then run one of the programs:
+Start the interactive ticket CLI:
 
 ```
-java -cp out com.opsdesk.tickets.OopDemo
+java -cp out com.opsdesk.tickets.TicketCli
+```
+
+The menu offers 1) Create, 2) Assign, 3) Status, 4) List, 5) Filter and
+0) Quit. Create, List and Quit work today; the others are coming next.
+
+The learning demos can also be run on their own:
+
+```
 java -cp out Warmup
+java -cp out com.opsdesk.tickets.OopDemo
+java -cp out com.opsdesk.tickets.CollectionsDemo
+java -cp out com.opsdesk.tickets.ModernJavaDemo
 ```
 
 Compiled `.class` files go into `out/`, which is not committed.

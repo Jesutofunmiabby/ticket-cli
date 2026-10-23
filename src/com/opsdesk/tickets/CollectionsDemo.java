@@ -9,11 +9,11 @@ public class CollectionsDemo {
 
     public static void main(String[] args) {
         TicketRepository repo = new TicketRepository();
-        repo.add(new SupportTicket(1, "VPN drops every hour", "OPEN", "HIGH", "Network"));
-        repo.add(new AssetRequest(2, "Second monitor", "OPEN", "LOW", "Dell 24 monitor"));
-        repo.add(new SupportTicket(3, "Printer jam on floor 2", "IN_PROGRESS", "MEDIUM", "Hardware"));
-        repo.add(new AssetRequest(4, "Laptop for new starter", "CLOSED", "HIGH", "Dell Latitude 5440"));
-        repo.add(new SupportTicket(5, "Email not syncing", "IN_PROGRESS", "LOW", "Software"));
+        repo.add(new SupportTicket(1, "VPN drops every hour", TicketStatus.OPEN, Priority.HIGH, "Network"));
+        repo.add(new AssetRequest(2, "Second monitor", TicketStatus.OPEN, Priority.LOW, "Dell 24 monitor"));
+        repo.add(new SupportTicket(3, "Printer jam on floor 2", TicketStatus.IN_PROGRESS, Priority.MEDIUM, "Hardware"));
+        repo.add(new AssetRequest(4, "Laptop for new starter", TicketStatus.CLOSED, Priority.HIGH, "Dell Latitude 5440"));
+        repo.add(new SupportTicket(5, "Email not syncing", TicketStatus.IN_PROGRESS, Priority.LOW, "Software"));
 
         List<Ticket> all = repo.getAll();
         all.get(0).assignTo("Amaka");
@@ -35,8 +35,8 @@ public class CollectionsDemo {
         System.out.println("Ticket \"99\": " + byId.get("99"));
 
         System.out.println("--- Map: grouped by status ---");
-        Map<String, List<Ticket>> byStatus = repo.groupByStatus();
-        for (Map.Entry<String, List<Ticket>> entry : byStatus.entrySet()) {
+        Map<TicketStatus, List<Ticket>> byStatus = repo.groupByStatus();
+        for (Map.Entry<TicketStatus, List<Ticket>> entry : byStatus.entrySet()) {
             System.out.print(entry.getKey() + ":");
             for (Ticket ticket : entry.getValue()) {
                 System.out.print(" #" + ticket.getId());
@@ -50,8 +50,8 @@ public class CollectionsDemo {
         }
 
         System.out.println("--- equals and hashCode ---");
-        Ticket first = new SupportTicket(10, "Reset my password", "OPEN", "LOW", "Accounts");
-        Ticket second = new SupportTicket(10, "Password reset please", "OPEN", "HIGH", "Accounts");
+        Ticket first = new SupportTicket(10, "Reset my password", TicketStatus.OPEN, Priority.LOW, "Accounts");
+        Ticket second = new SupportTicket(10, "Password reset please", TicketStatus.OPEN, Priority.HIGH, "Accounts");
         System.out.println("first == second: " + (first == second));
         System.out.println("first.equals(second): " + first.equals(second));
         Set<Ticket> unique = new HashSet<>();

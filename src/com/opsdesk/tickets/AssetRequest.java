@@ -4,7 +4,7 @@ public class AssetRequest extends Ticket {
 
     private String assetName;
 
-    public AssetRequest(int id, String title, String status, String priority, String assetName) {
+    public AssetRequest(int id, String title, TicketStatus status, Priority priority, String assetName) {
         super(id, title, status, priority);
         this.assetName = assetName;
     }
