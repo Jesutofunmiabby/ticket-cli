@@ -83,7 +83,7 @@ public class TicketCli {
     }
 
     private void create() {
-        String type = readType();
+        String type = readTicketType();
         String title = readNonBlank("Title: ");
         Priority priority = readEnum("Priority", Priority.class);
         Ticket ticket;
@@ -128,7 +128,7 @@ public class TicketCli {
         tickets.forEach(ticket -> System.out.println(ticket.describe()));
     }
 
-    private String readType() {
+    private String readTicketType() {
         while (true) {
             String type = prompt("Type (1 = Support ticket, 2 = Asset request): ");
             if (type.equals("1") || type.equals("2")) {
