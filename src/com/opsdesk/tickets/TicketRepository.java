@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -22,6 +23,12 @@ public class TicketRepository {
 
     public void printAll() {
         tickets.forEach(ticket -> System.out.println(ticket.describe()));
+    }
+
+    public Optional<Ticket> findById(int id) {
+        return tickets.stream()
+                .filter(ticket -> ticket.getId() == id)
+                .findFirst();
     }
 
     public Set<String> getUniqueAssignees() {
