@@ -51,19 +51,19 @@ public class TicketRepository {
     public List<Ticket> sortedByPriorityThenTitle() {
         return tickets.stream()
                 .sorted(Comparator.comparing(Ticket::getPriority).thenComparing(Ticket::getTitle))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<Ticket> filterByStatus(TicketStatus status) {
         return tickets.stream()
                 .filter(ticket -> ticket.getStatus() == status)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<TicketSummary> summaries() {
         return tickets.stream()
                 .map(ticket -> new TicketSummary(
                         String.valueOf(ticket.getId()), ticket.getTitle(), ticket.getStatus()))
-                .collect(Collectors.toList());
+                .toList();
     }
 }

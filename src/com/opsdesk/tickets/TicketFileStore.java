@@ -39,7 +39,7 @@ public class TicketFileStore {
     public void save(List<Ticket> tickets) throws IOException {
         List<String> lines = tickets.stream()
                 .map(this::toLine)
-                .collect(Collectors.toList());
+                .toList();
         Files.write(file, lines, StandardCharsets.UTF_8);
     }
 
