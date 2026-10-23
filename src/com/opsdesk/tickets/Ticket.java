@@ -44,4 +44,21 @@ public abstract class Ticket implements Assignable {
     }
 
     public abstract String describe();
+
+    // Two tickets are the same ticket if they have the same id
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (!(other instanceof Ticket that)) {
+            return false;
+        }
+        return id == that.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(id);
+    }
 }
