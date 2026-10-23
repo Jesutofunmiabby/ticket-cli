@@ -65,7 +65,6 @@ public class TicketFileStore {
                     warnings.add("Line " + lineNumber + " skipped: duplicate ticket id " + ticket.getId() + ".");
                 }
             } catch (IllegalArgumentException e) {
-                // Also catches NumberFormatException (a bad id) and bad enum names
                 warnings.add("Line " + lineNumber + " skipped: " + e.getMessage());
             }
         }
@@ -107,10 +106,10 @@ public class TicketFileStore {
             fields[i] = URLDecoder.decode(fields[i], StandardCharsets.UTF_8);
         }
         String type = fields[0];
-        int id = Integer.parseInt(fields[1]);
+        int id = parseId(fields[1]);
         String title = fields[2];
-        TicketStatus status = TicketStatus.valueOf(fields[3]);
-        Priority priority = Priority.valueOf(fields[4]);
+        TicketStatus status = parseEnum(TicketStatus.class, fields[3], "status");
+        Priority priority = parseEnum(Priority.class, fields[4], "priority");
         String assignee = fields[5];
         String detail = fields[6];
 
@@ -123,5 +122,21 @@ public class TicketFileStore {
             ticket.assignTo(assignee);
         }
         return ticket;
+    }
+
+    private int parseId(String value) {
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("ticket id \"" + value + "\" is not a whole number.");
+        }
+    }
+
+    private <E extends Enum<E>> E parseEnum(Class<E> enumType, String value, String fieldName) {
+        try {
+            return Enum.valueOf(enumType, value);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException(fieldName + " \"" + value + "\" is not recognised.");
+        }
     }
 }
