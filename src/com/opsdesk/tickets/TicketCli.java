@@ -1,5 +1,7 @@
 package com.opsdesk.tickets;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -8,15 +10,22 @@ import java.util.stream.Collectors;
 
 public class TicketCli {
 
-    private final TicketService service = new TicketService();
+    private final TicketService service;
+    private final TicketFileStore fileStore;
     private final Scanner scanner = new Scanner(System.in);
 
+    public TicketCli(TicketService service, TicketFileStore fileStore) {
+        this.service = service;
+        this.fileStore = fileStore;
+    }
+
     public static void main(String[] args) {
-        new TicketCli().run();
+        new TicketCli(new TicketService(), new TicketFileStore(Path.of("tickets.txt"))).run();
     }
 
     public void run() {
         System.out.println("=== OpsDesk Ticket CLI ===");
+        loadTickets();
         try {
             boolean running = true;
             while (running) {
@@ -32,7 +41,29 @@ public class TicketCli {
         } catch (NoSuchElementException e) {
             // Input ended (Ctrl+D, Ctrl+Z or the end of a piped file): stop instead of crashing
         }
+        saveTickets();
         System.out.println("Goodbye.");
+    }
+
+    private void loadTickets() {
+        try {
+            TicketFileStore.LoadResult result = fileStore.load();
+            result.warnings().forEach(warning -> System.out.println("Warning: " + warning));
+            service.addExistingTickets(result.tickets());
+            System.out.println("Loaded " + result.tickets().size() + " ticket(s) from " + fileStore.getFile() + ".");
+        } catch (IOException e) {
+            System.out.println("Could not read " + fileStore.getFile() + " (" + e.getMessage() + "). Starting with no tickets.");
+        }
+    }
+
+    private void saveTickets() {
+        try {
+            List<Ticket> tickets = service.getAll();
+            fileStore.save(tickets);
+            System.out.println("Saved " + tickets.size() + " ticket(s) to " + fileStore.getFile() + ".");
+        } catch (IOException e) {
+            System.out.println("Could not save tickets to " + fileStore.getFile() + " (" + e.getMessage() + ").");
+        }
     }
 
     // Returns false when the user wants to quit
