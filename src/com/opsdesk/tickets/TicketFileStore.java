@@ -103,7 +103,11 @@ public class TicketFileStore {
                     "expected " + FIELD_COUNT + " fields but found " + fields.length + ".");
         }
         for (int i = 0; i < fields.length; i++) {
-            fields[i] = URLDecoder.decode(fields[i], StandardCharsets.UTF_8);
+            try {
+                fields[i] = URLDecoder.decode(fields[i], StandardCharsets.UTF_8);
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("field " + (i + 1) + " contains a broken % code.");
+            }
         }
         String type = fields[0];
         int id = parseId(fields[1]);
