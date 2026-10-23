@@ -24,6 +24,18 @@ public class TicketService {
                 .orElseThrow(() -> new TicketNotFoundException(id));
     }
 
+    public Ticket assign(int id, String user) {
+        Ticket ticket = getById(id);
+        ticket.assignTo(user);
+        return ticket;
+    }
+
+    public Ticket changeStatus(int id, TicketStatus newStatus) {
+        Ticket ticket = getById(id);
+        ticket.changeStatus(newStatus);
+        return ticket;
+    }
+
     public List<Ticket> listByPriority() {
         return repository.sortedByPriorityThenTitle();
     }
