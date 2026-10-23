@@ -2,11 +2,11 @@ package com.opsdesk.tickets;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class TicketRepository {
 
@@ -21,44 +21,42 @@ public class TicketRepository {
     }
 
     public void printAll() {
-        for (Ticket ticket : tickets) {
-            System.out.println(ticket.describe());
-        }
+        tickets.forEach(ticket -> System.out.println(ticket.describe()));
     }
 
     public Set<String> getUniqueAssignees() {
-        Set<String> assignees = new HashSet<>();
-        for (Ticket ticket : tickets) {
-            if (ticket.getAssignee() != null) {
-                assignees.add(ticket.getAssignee());
-            }
-        }
-        return assignees;
+        return tickets.stream()
+                .map(Ticket::getAssignee)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
     }
 
     public Map<String, Ticket> indexById() {
-        Map<String, Ticket> byId = new HashMap<>();
-        for (Ticket ticket : tickets) {
-            byId.put(String.valueOf(ticket.getId()), ticket);
-        }
-        return byId;
+        return tickets.stream()
+                .collect(Collectors.toMap(ticket -> String.valueOf(ticket.getId()), ticket -> ticket));
     }
 
     public Map<TicketStatus, List<Ticket>> groupByStatus() {
-        Map<TicketStatus, List<Ticket>> byStatus = new HashMap<>();
-        for (Ticket ticket : tickets) {
-            TicketStatus status = ticket.getStatus();
-            if (!byStatus.containsKey(status)) {
-                byStatus.put(status, new ArrayList<>());
-            }
-            byStatus.get(status).add(ticket);
-        }
-        return byStatus;
+        return tickets.stream()
+                .collect(Collectors.groupingBy(Ticket::getStatus));
     }
 
     public List<Ticket> sortedByPriorityThenTitle() {
-        List<Ticket> sorted = new ArrayList<>(tickets);
-        sorted.sort(Comparator.comparing(Ticket::getPriority).thenComparing(Ticket::getTitle));
-        return sorted;
+        return tickets.stream()
+                .sorted(Comparator.comparing(Ticket::getPriority).thenComparing(Ticket::getTitle))
+                .collect(Collectors.toList());
+    }
+
+    public List<Ticket> filterByStatus(TicketStatus status) {
+        return tickets.stream()
+                .filter(ticket -> ticket.getStatus() == status)
+                .collect(Collectors.toList());
+    }
+
+    public List<TicketSummary> summaries() {
+        return tickets.stream()
+                .map(ticket -> new TicketSummary(
+                        String.valueOf(ticket.getId()), ticket.getTitle(), ticket.getStatus()))
+                .collect(Collectors.toList());
     }
 }
